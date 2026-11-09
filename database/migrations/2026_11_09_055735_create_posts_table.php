@@ -10,16 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('posts', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('author_id')->constrained()->cascadeOnDelete();
+        $table->string('title');
+        $table->string('category');
+        $table->text('body');
+        $table->boolean('is_published')->default(false);
+        $table->boolean('is_pinned')->default(false);
+        $table->timestamp('published_at')->nullable();
+        $table->timestamps();
+    });
+}
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('posts');
