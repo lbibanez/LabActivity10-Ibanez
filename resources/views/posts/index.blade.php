@@ -56,7 +56,4 @@
 <div class="mt-4">
     {{ $posts->links() }}
 </div>
-<p class="text-xs text-gray-500 mt-2">
-    Showing {{ $posts->firstItem() ?? 0 }}-{{ $posts->lastItem() ?? 0 }} of {{ $posts->total() }} posts
-</p>
 @endsection
