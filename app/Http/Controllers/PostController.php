@@ -9,7 +9,9 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::query()->where('is_published', true);
+        $query = Post::query()
+            ->with('author')
+            ->where('is_published', true);
 
         if ($request->filled('q')) {
             $query->where('title', 'like', '%' . $request->q . '%');
@@ -24,21 +26,24 @@ class PostController extends Controller
             ->paginate(6)
             ->withQueryString();
 
-        $categories = Post::query()->distinct()->orderBy('category')->pluck('category');
+        $categories = Post::query()
+            ->where('is_published', true)
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
 
         return view('posts.index', compact('posts', 'categories'));
     }
 
     public function show($id)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::with('author')->findOrFail($id);
 
         if (!$post->is_published) {
             abort(404);
         }
 
-        $post->views += 1;
-        $post->save();
+        $post->increment('views');
 
         return view('posts.show', compact('post'));
     }
